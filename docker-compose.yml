@@ -1,0 +1,26 @@
+version: "3.11"
+
+services:
+  app:
+    build:
+      context: ./app
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "python main.py"
+    depends_on:
+      - redis
+      - celery
+
+  celery:
+    build:
+      context: ./app
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "celery -A tasks worker --loglevel=INFO"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7.0.5-alpine
